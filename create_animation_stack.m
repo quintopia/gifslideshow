@@ -15,8 +15,9 @@ function outputseq=create_animation_stack(sequence,bleed)
 %   field of view of the first image are cropped away in advance.
 %
 %   See also IMREGSURF
+
 %allocate RGB output sequence
-outputseq = cell(length(sequence));
+outputseq = cell(1,length(sequence));
 outputseq{1}=sequence{1};
 
 %create structural element for cutting off a border of width bleed
