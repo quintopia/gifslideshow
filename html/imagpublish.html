@@ -1,0 +1,154 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Making a Slideshow GIF</title><meta name="generator" content="MATLAB 8.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-07-18"><meta name="DC.source" content="imagpublish.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Making a Slideshow GIF</h1><!--introduction--><p>Our goal here is to take a sequence of somewhat similar images and create a slideshow in which the most similar parts of the image have been aligned. We can do this with the tools <tt>create_animation_stack</tt> and <tt>write_animation_stack</tt>.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Importing and Preparing Source Images</a></li><li><a href="#4">Registering and Overlapping the Images</a></li><li><a href="#5">Create the Slide Show and Save it to a GIF</a></li><li><a href="#8">Single Image Action Shot</a></li></ul></div><h2>Importing and Preparing Source Images<a name="1"></a></h2><p>First, import a sequence of RBG images. Here, I have already imported night1 through night6. These images do not need to have the same dimensions, but they should all have been taken at about the same time and from the about the same place. It is fine if the camera changes orientation between shots. For instance compare night1 with night6:</p><pre class="codeinput">imshow(imresize(night1,0.3));
+</pre><img vspace="5" hspace="5" src="imagpublish_01.png" alt=""> <pre class="codeinput">imshow(imresize(night6,0.3));
+</pre><img vspace="5" hspace="5" src="imagpublish_02.png" alt=""> <p>It is best if these images already have approximately the same histogram. If some of the images have very bright or very dark spots that the other images don't have (or, in particular, which the image that frames the scene in the way you most prefer does not have), it is best to crop these parts of the image out in advance. Speaking of which, this process requires the images be in a cell array, where the first element is the image which has the desired point of view. I prefer the framing of night6.</p><pre class="codeinput">seq = {night6,night5,night4,night3,night2,night1};
+</pre><h2>Registering and Overlapping the Images<a name="4"></a></h2><p>The remainder of this process is incredibly easy, since the tools do all the heavy lifting. First, we need to register the images and overlay them with the first image in the sequence. Since the images are so small, we'll bleed the edges of the image parts into one another by only 5 pixels. This step may take a minute, so go grab a snack while you wait.</p><pre class="codeinput">seq = create_animation_stack(seq,5);
+</pre><h2>Create the Slide Show and Save it to a GIF<a name="5"></a></h2><p>We want to save a slide show of these aligned images to a GIF. First, note that this process will create very large files if the source images are very large. So let's make these images much smaller.</p><pre class="codeinput"><span class="keyword">for</span> i=1:6
+    seq{i}=imresize(seq{i},0.1);
+<span class="keyword">end</span>
+</pre><p>Actually creating the file is easy, but some more decisions must be made here: should the slide show loop? Should consecutive images dissolve into each other? How slow should the dissolve be? How long should each image be displayed? Here, we'll allow the slideshow to loop forever, with each image being displayed for 1.5 seconds and spending 10 tenths of a second dissolving from one image into the next. We'll save the result to night.gif.</p><pre class="codeinput">write_animation_stack(fliplr(seq), <span class="string">'night.gif'</span>, 10, 1.5, 1);
+</pre><pre class="codeoutput">Writing Frame 1
+Writing Frame 2
+Writing Frame 3
+Writing Frame 4
+Writing Frame 5
+Writing Frame 6
+</pre><p>
+<img src="night.gif">
+</p><h2>Single Image Action Shot<a name="8"></a></h2><p>It is also possible to layer all these images into a single image using <tt>action_shot</tt>, though this will require much more user input. Call it with arguments like those you used for <tt>create_animation_stack</tt>, and then select the part of each image you want to to preserve in the final by drawing polygons around them. The tighter you make the polygons around the parts you wish to preserve, the better the final result will look.</p><pre class="language-matlab">combined = action_shot(seq,5);
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2013a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Making a Slideshow GIF
+% Our goal here is to take a sequence of somewhat similar images and create
+% a slideshow in which the most similar parts of the image have been
+% aligned. We can do this with the tools |create_animation_stack| and
+% |write_animation_stack|.
+%% Importing and Preparing Source Images
+% First, import a sequence of RBG images. Here, I have already imported
+% night1 through night6. These images do not need to have the same
+% dimensions, but they should all have been taken at about the same time
+% and from the about the same place. It is fine if the camera changes
+% orientation between shots. For instance compare night1 with night6:
+
+imshow(imresize(night1,0.3));
+%%
+imshow(imresize(night6,0.3));
+%%
+% It is best if these images already have approximately the same histogram.
+% If some of the images have very bright or very dark spots that the other
+% images don't have (or, in particular, which the image that frames the
+% scene in the way you most prefer does not have), it is best to crop these
+% parts of the image out in advance. Speaking of which, this process
+% requires the images be in a cell array, where the first element is the
+% image which has the desired point of view. I prefer the framing of
+% night6.
+
+seq = {night6,night5,night4,night3,night2,night1};
+
+%% Registering and Overlapping the Images
+% The remainder of this process is incredibly easy, since the tools do all
+% the heavy lifting. First, we need to register the images and overlay them
+% with the first image in the sequence. Since the images are so small,
+% we'll bleed the edges of the image parts into one another by only 5
+% pixels. This step may take a minute, so go grab a snack while you wait.
+seq = create_animation_stack(seq,5);
+%% Create the Slide Show and Save it to a GIF
+% We want to save a slide show of these aligned images to a GIF.
+% First, note that this process will create very large files if the source 
+% images are very large. So let's make these images much smaller.
+
+for i=1:6
+    seq{i}=imresize(seq{i},0.1);
+end
+%%
+% Actually creating the file is easy, but some more decisions must be made
+% here: should the slide show loop? Should consecutive images dissolve into
+% each other? How slow should the dissolve be? How long should each image
+% be displayed? Here, we'll allow the slideshow to loop forever, with each
+% image being displayed for 1.5 seconds and spending 10 tenths of a second
+% dissolving from one image into the next. We'll save the result to
+% night.gif.
+write_animation_stack(fliplr(seq), 'night.gif', 10, 1.5, 1);
+%%
+% <html>
+% <img src="../night.gif">
+% </html>
+%% Single Image Action Shot
+% It is also possible to layer all these images into a single image using
+% |action_shot|, though this will require much more user input. Call it
+% with arguments like those you used for |create_animation_stack|, and then 
+% select the part of each image you want to to preserve in the final by 
+% drawing polygons around them. The tighter you make the polygons around
+% the parts you wish to preserve, the better the final result will
+% look.
+%
+%   combined = action_shot(seq,5);
+%
+##### SOURCE END #####
+--></body></html>
